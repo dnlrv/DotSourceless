@@ -29,7 +29,7 @@ $DotSourcelessScriptBlocks = New-Object System.Collections.ArrayList
 foreach ($script in $DotSourcelessScripts)
 {
     # format the uri
-    $uri = ("https://raw.githubusercontent.com/dnlrv/DotSourceless/main/Classes/{0}" -f $script)
+    $uri = ("https://raw.githubusercontent.com/dnlrv/DotSourceless/main/{0}/{1}" -f $script.ScriptType, $script)
 
     # new temp object for the ScriptBlock ArrayList
     $obj = New-Object PSCustomObject

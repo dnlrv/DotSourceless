@@ -1,6 +1,6 @@
-class Merchant
+class Hero
 {
 	[System.String]$Name
 
-	Merchant () {}
+	Hero () {}
 }

@@ -1,3 +1,5 @@
+# class example, inheritence does not work (yet)
+
 class Actor
 {
 	[System.String]$Name

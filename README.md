@@ -6,7 +6,10 @@ The purpose of the DotSourceless design is high portability. The ability to have
 
 All classes and functions will also exist as ScriptBlocks within the `$DotSourcelessScriptBlocks` variable.
 
-New scripts can be added to the Classes or Functions folders, however any script starting with an underscore (_) will be ignored.
+Each folder of scripts in the repo needs to have a new code block added to the primary
+`$DotSourceless.ps1` and `$DotSourceless_local.ps1` scripts.
+
+Any script starting with an underscore `_` in a folder will be ignored.
 
 ## DotSourceless
 ```

@@ -28,7 +28,7 @@ function Get-Actors
 		$PowerShell.RunspacePool = $RunspacePool
 
 		# Counter for the account objects
-		$g++; Write-Progress -Activity "Getting Actors" -Status ("{0} out of {1} Complete" -f $g,$Names.Count) -PercentComplete ($g/($Names | Measure-Object | Select-Object -ExpandProperty Count)*100)
+		$g++; Write-Progress -Activity "Getting objects" -Status ("{0} out of {1} Complete" -f $g,$Names.Count) -PercentComplete ($g/($Names | Measure-Object | Select-Object -ExpandProperty Count)*100)
 		
 		# for each script in our DotSourcelessScriptBlocks
 		foreach ($script in $global:DotSourcelessScriptBlocks)
@@ -45,12 +45,11 @@ function Get-Actors
 				$name
 			)
 		
-			$account = New-Object Actor $name
+			$actor = New-Object Actor -ArgumentList ($name)
 	
-			return $account
+			return $actor
 		})# [void]$PowerShell.AddScript(
-
-		[void]$PowerShell.AddParameter('name',$name)
+		[void]$PowerShell.AddParameter('name',$name) # this passes the variable to the worker thread
 		
 		$JobObject = @{}
 		$JobObject.Runspace   = $PowerShell.BeginInvoke()
@@ -62,7 +61,7 @@ function Get-Actors
 	foreach ($job in $jobs)
 	{
 		# Counter for the job objects
-		$p++; Write-Progress -Activity "Processing Actors" -Status ("{0} out of {1} Complete" -f $p,$jobs.Count) -PercentComplete ($p/($jobs | Measure-Object | Select-Object -ExpandProperty Count)*100)
+		$p++; Write-Progress -Activity "Processing objects" -Status ("{0} out of {1} Complete" -f $p,$jobs.Count) -PercentComplete ($p/($jobs | Measure-Object | Select-Object -ExpandProperty Count)*100)
 		
 		$returned.Add($job.powershell.EndInvoke($job.RunSpace)) | Out-Null
 		$job.PowerShell.Dispose()
@@ -71,6 +70,8 @@ function Get-Actors
 	# $returned gives back a System.Management.Automation.PSObject
 	# so we'll need to recreate the original object back in our 
 	# main thread to ensure we have our original class objects
+	# this is very important if your classes have methods as the
+	# automation object WON'T have those.
 	
 	$Actors = New-Object System.Collections.ArrayList
 

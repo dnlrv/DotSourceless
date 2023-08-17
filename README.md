@@ -22,3 +22,21 @@ If you want to run all of this locally, download all the scripts in this repo to
 ```
 . .\DotSourceless_local.ps1
 ```
+
+## Current issues/limitations
+
+- Custom class objects can't reference each other by their original TypeName, only by the PSOBject or PSCustomObject TypeName.
+  - For example, if you had the `Actor` class, and also wanted to create a `Movie` class to add to the `Actor` class to list what movies an actor/actress has been in, you'd need to refer to it as the following:
+
+```
+class Actor
+{
+	[System.String]$Name
+	[PSCustomObject[]]$Movies
+
+	Actor () {}
+}
+```
+Note in the above example, I'm referring to the Movies property by `[PSCustomObject[]]$Movies` TypeName rather than the `[Movie[]]$Movies` TypeName.
+
+Failing to do this will result in a `Cannot find type [Movie]` error when you dotsource all the scripts. I don't know how to address this while still keeping with this project's current design.
